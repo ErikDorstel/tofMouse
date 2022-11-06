@@ -9,7 +9,8 @@ CRGB leds[numLeds];
 
 SparkFun_VL53L5CX VL53L5CX;
 VL53L5CX_ResultsData tofData;
-struct bufferStruct { int x[10]; int y[10]; int z[10]; int total[10]; int index=0; } buffer;
+struct mouseStruct { int x; int y; int z; int x1; int y1; float total; };
+struct bufferStruct { mouseStruct mouse[10]; int index=0; } buffer;
 
 BleMouse bleMouse;
 uint32_t bleTimer;
@@ -33,13 +34,13 @@ void setup() {
   Serial.print("VL53L5CX Ranging Frequency - "); Serial.println(VL53L5CX.getRangingFrequency());
   VL53L5CX.startRanging(); }
 
-void putBuffer(int value) {
+void putBuffer(mouseStruct value) {
   buffer.index++; if (buffer.index>9) { buffer.index=0; }
-  buffer.y[buffer.index]=value; }
+  buffer.mouse[buffer.index]=value; }
 
-int getBuffer(int index) {
-  if (buffer.index+index<0) { return buffer.y[buffer.index+index+10]; }
-  else { return buffer.y[buffer.index+index]; } }
+mouseStruct getBuffer(int index) {
+  if (buffer.index+index<0) { return buffer.mouse[buffer.index+index+10]; }
+  else { return buffer.mouse[buffer.index+index]; } }
 
 void loop() {
   if (millis()>=bleTimer) { bleTimer=millis()+10000; if (!bleMouse.isConnected()) { bleMouse.begin(); Serial.println("BLE Mouse connection attempt."); } }
@@ -84,8 +85,8 @@ void loop() {
 
         //Serial.println("X: " + String(x1) + " Y: " + String(y) + " Z: " + String(z) + " Total: " + String(total));
         if (bleMouse.isConnected()) { bleMouse.move(x1,z); }
-        putBuffer(y);
-        if (getBuffer(0)<-10 && getBuffer(0)-getBuffer(-3)<-10 && getBuffer(-3)-getBuffer(-6)>10) {
+        putBuffer({x,y,z,x1,y1,total});
+        if (getBuffer(0).y<-10 && getBuffer(0).y-getBuffer(-3).y<-10 && getBuffer(-3).y-getBuffer(-6).y>10) {
           leds[0].setHSV(0,255,255); if (bleMouse.isConnected()) { bleMouse.click(MOUSE_LEFT); } } }
 
       FastLED.show(); } } }
