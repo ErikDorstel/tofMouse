@@ -14,3 +14,6 @@ ESP32 and VL53L5CX based Gesture Mouse
 * address - 0x52
 #### NeoPixel matrix
 * GPIO 15
+#### Development Hardware
+[Example Video](https://www.youtube.com/watch?v=R3ijq8uh_zs)
+[![IMAGE ALT TEXT HERE](http://www.dorstel.de/github/tofMouse_v1.0.png)](https://www.youtube.com/watch?v=R3ijq8uh_zs)
